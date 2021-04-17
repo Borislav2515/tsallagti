@@ -1,23 +1,24 @@
 
-document.addEventListener('DOMContentLoaded', function () {
-    const form = document.getElementById('form');
-    form.addEventListener('submit', formSend);
+const form = document.getElementById('form');
+form.addEventListener('submit', function (evt) {
+    evt.preventDefault();
 
-    async function  formSend(e) {
-        e.preventDefault();
+    let formData = {
+        name: document.querySelector(".tour__price-input[name='name'").value,
+        email: document.querySelector(".tour__price-input[name='email'").value,
+    };
 
-        let formData = new FormData(form);
+    let request = new XMLHttpRequest();
+    request.addEventListener('load', function () {
+        consile.log(request).response;
+        alert('Ваша заявка успешно отправлена');
+        form.innerHTML = '<h2>Спасибо за заявку</h2>';
+    });
 
-        let response = await fetch('sendmail.php', {
-            method: 'POST',
-            body: formData
-        });
-        if (response.ok) {
-            let result = await response.json();
-            alert(result.message);
-            form.reset()
-        } else {
-            alert('Ошибка')
-        }
-    }
+    request.open('POST', '/sendmail.php', true);
+    request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded', 'charset=UTF-8');
+    request.send('name=' + encodeURIComponent(formData.name) + '&email=' + encodeURIComponent(formData.email));
 });
+
+
+
